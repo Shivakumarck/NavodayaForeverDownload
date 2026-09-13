@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#5878d9"
+    >
+
+    <meta
+        name="description"
+        content="Navodaya Forever — Friends, memories & moments that stay forever."
+    >
+
+    <title>
+        Navodaya Forever 💙
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+</head>
+
+
+<body>
+
+<div class="page">
+
+
+    <!-- =====================================================
+         HERO
+    ====================================================== -->
+
+    <header class="hero">
+
+        <div class="hero-glow glow-one"></div>
+        <div class="hero-glow glow-two"></div>
+
+
+        <div class="logo-circle">
+
+            <span>
+                💙
+            </span>
+
+        </div>
+
+
+        <div class="official-badge">
+
+            ✓ Official Navodaya Forever
+
+        </div>
+
+
+        <h1>
+            NAVODAYA FOREVER
+        </h1>
+
+
+        <p class="tagline">
+
+            Friends, memories & moments
+            that stay forever ❤️
+
+        </p>
+
+
+        <p class="hero-description">
+
+            Reconnect with your Navodaya friends,
+            share memories, chat, join your batch
+            and relive the days that made us who we are.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+            <button
+                class="download-button"
+                onclick="downloadApp()"
+            >
+
+                <span class="download-icon">
+                    ↓
+                </span>
+
+                <span>
+                    DOWNLOAD APP
+                </span>
+
+            </button>
+
+
+            <button
+                class="secondary-button"
+                onclick="scrollToInvite()"
+            >
+
+                👥 Invite Friends
+
+            </button>
+
+        </div>
+
+
+        <div class="platform-info">
+
+            <span>
+                📱 Android only
+            </span>
+
+            <span>
+                •
+            </span>
+
+            <span>
+                🆓 Free
+            </span>
+
+            <span>
+                •
+            </span>
+
+            <span>
+                ✓ Official
+
+            </span>
+
+        </div>
+
+    </header>
+
+
+
+    <!-- =====================================================
+         APP INFORMATION
+    ====================================================== -->
+
+    <section class="section">
+
+        <div class="section-title">
+
+            <span class="section-icon">
+                📱
+            </span>
+
+            <div>
+
+                <h2>
+                    Navodaya Forever Android App
+                </h2>
+
+                <p>
+                    Your Navodaya community in one place.
+                </p>
+
+            </div>
+
+        </div>
+
+
+        <div class="feature-grid">
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    👥
+                </div>
+
+                <h3>
+                    Navodaya Friends
+                </h3>
+
+                <p>
+                    Find and reconnect with your
+                    Navodaya friends.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    ❤️
+                </div>
+
+                <h3>
+                    Memories
+                </h3>
+
+                <p>
+                    Share and relive your favourite
+                    Navodaya moments.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    💬
+                </div>
+
+                <h3>
+                    Chat
+                </h3>
+
+                <p>
+                    Stay connected with friends
+                    wherever they are.
+                </p>
+
+            </div>
+
+
+            <div class="feature-card">
+
+                <div class="feature-icon">
+                    🏫
+                </div>
+
+                <h3>
+                    Your Batch
+                </h3>
+
+                <p>
+                    Join your JNV batch and
+                    reconnect with classmates.
+                </p>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         DOWNLOAD CARD
+    ====================================================== -->
+
+    <section class="download-section">
+
+        <div class="download-card">
+
+
+            <div class="app-icon">
+
+                💙
+
+            </div>
+
+
+            <div class="download-info">
+
+                <div class="download-title-row">
+
+                    <h2>
+                        Navodaya Forever
+                    </h2>
+
+                    <span class="version-badge">
+                        v1.0
+                    </span>
+
+                </div>
+
+
+                <p>
+                    Official Android application
+                </p>
+
+
+                <div class="app-details">
+
+                    <div>
+
+                        <span class="detail-label">
+                            Version
+                        </span>
+
+                        <strong id="versionText">
+                            1.0
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span class="detail-label">
+                            App size
+                        </span>
+
+                        <strong id="apkSize">
+                            Calculating...
+                        </strong>
+
+                    </div>
+
+
+                    <div>
+
+                        <span class="detail-label">
+                            Platform
+                        </span>
+
+                        <strong>
+                            Android
+                        </strong>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <button
+                class="main-download"
+                onclick="downloadApp()"
+            >
+
+                ⬇️
+                Download APK
+
+            </button>
+
+
+            <p class="download-note">
+
+                Free • Official • Android only
+
+            </p>
+
+
+            <div
+                id="downloadMessage"
+                class="download-message"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         QR CODE
+    ====================================================== -->
+
+    <section class="qr-section">
+
+        <div class="qr-card">
+
+
+            <div class="qr-content">
+
+                <div>
+
+                    <span class="section-icon">
+                        📲
+                    </span>
+
+                    <h2>
+                        Scan to Get Navodaya Forever
+                    </h2>
+
+                    <p>
+                        Open your phone camera and scan
+                        this QR code to download the app.
+                    </p>
+
+
+                    <div class="qr-steps">
+
+                        <div>
+
+                            <span>
+                                1
+                            </span>
+
+                            Open your camera
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                2
+                            </span>
+
+                            Scan the QR code
+
+                        </div>
+
+
+                        <div>
+
+                            <span>
+                                3
+                            </span>
+
+                            Tap Download App
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="qr-wrapper">
+
+                    <div
+                        id="qrCode"
+                        class="qr-code"
+                    ></div>
+
+                    <small>
+                        Navodaya Forever
+                    </small>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         INVITE FRIENDS
+    ====================================================== -->
+
+    <section
+        id="inviteSection"
+        class="invite-section"
+    >
+
+        <div class="invite-card">
+
+
+            <div class="invite-icon">
+                👥
+            </div>
+
+
+            <h2>
+                Invite Your Navodaya Friends
+            </h2>
+
+
+            <p>
+                You joined Navodaya Forever.
+                Now bring your friends with you. 💙
+            </p>
+
+
+            <div class="share-buttons">
+
+
+                <button
+                    class="share-button whatsapp"
+                    onclick="shareWhatsApp()"
+                >
+
+                    <span>
+                        🟢
+                    </span>
+
+                    WhatsApp
+
+                </button>
+
+
+                <button
+                    class="share-button telegram"
+                    onclick="shareTelegram()"
+                >
+
+                    <span>
+                        ✈️
+                    </span>
+
+                    Telegram
+
+                </button>
+
+
+                <button
+                    class="share-button copy"
+                    onclick="copyLink()"
+                >
+
+                    <span>
+                        📋
+                    </span>
+
+                    Copy Link
+
+                </button>
+
+            </div>
+
+
+            <div
+                id="copyMessage"
+                class="copy-message"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         WHY NAVODAYA FOREVER
+    ====================================================== -->
+
+    <section class="memory-section">
+
+        <div class="memory-card">
+
+
+            <div class="memory-text">
+
+                <span class="memory-label">
+                    💙 FOR EVERY NAVODAYAN
+                </span>
+
+
+                <h2>
+                    Some memories deserve
+                    to stay forever.
+                </h2>
+
+
+                <p>
+
+                    The early morning PT.
+                    Assembly.
+                    Hostel life.
+                    Study hours.
+                    Sports.
+                    House competitions.
+                    Teachers.
+                    Friends.
+
+                </p>
+
+
+                <p>
+
+                    Years may pass,
+                    but those memories never really leave us.
+
+                </p>
+
+
+                <strong>
+                    Navodaya Forever ❤️
+                </strong>
+
+            </div>
+
+
+            <div class="memory-emoji">
+
+                🏫
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         VERSION / UPDATE
+    ====================================================== -->
+
+    <section class="update-section">
+
+        <div class="update-card">
+
+
+            <div class="update-icon">
+                🚀
+            </div>
+
+
+            <div>
+
+                <span class="update-label">
+                    LATEST VERSION
+                </span>
+
+
+                <h2>
+                    Navodaya Forever
+                    <span id="updateVersion">
+                        v1.0
+                    </span>
+                </h2>
+
+
+                <p id="updateDescription">
+
+                    Latest Android release is available.
+
+                </p>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FUTURE PLAY STORE
+    ====================================================== -->
+
+    <section class="playstore-section">
+
+        <div class="playstore-card">
+
+            <div class="playstore-icon">
+                ▶
+            </div>
+
+
+            <div>
+
+                <span class="coming-label">
+                    COMING SOON
+                </span>
+
+
+                <h2>
+                    Google Play Store
+                </h2>
+
+
+                <p>
+                    Soon you will be able to get
+                    Navodaya Forever directly from
+                    Google Play.
+                </p>
+
+            </div>
+
+
+            <button
+                id="playStoreButton"
+                class="playstore-button"
+                onclick="openPlayStore()"
+                style="display:none;"
+            >
+
+                Get it on Google Play
+
+            </button>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <div class="footer-logo">
+            💙
+        </div>
+
+
+        <h2>
+            NAVODAYA FOREVER
+        </h2>
+
+
+        <p>
+            Friends, memories & moments
+            that stay forever ❤️
+        </p>
+
+
+        <div class="footer-links">
+
+            <a
+                href="#"
+                onclick="scrollToTop(); return false;"
+            >
+                Home
+            </a>
+
+            <a
+                href="#inviteSection"
+            >
+                Invite Friends
+            </a>
+
+            <a
+                href="#"
+                onclick="downloadApp(); return false;"
+            >
+                Download
+            </a>
+
+        </div>
+
+
+        <div class="footer-divider"></div>
+
+
+        <p class="copyright">
+
+            Made for Navodaya friends 💙
+
+        </p>
+
+
+        <p class="copyright-small">
+
+            © <span id="currentYear"></span>
+            Navodaya Forever
+
+        </p>
+
+    </footer>
+
+
+</div>
+
+
+<!-- =====================================================
+     QR CODE LIBRARY
+====================================================== -->
+
+<script
+    src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+></script>
+
+
+<script src="script.js"></script>
+
+
+</body>
+
+</html>
