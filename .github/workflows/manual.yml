@@ -1,0 +1,134 @@
+name: Navodaya Forever FCM Sender
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  send-notifications:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install Firebase Admin SDK
+        run: npm install firebase-admin
+
+      - name: Send pending FCM notifications
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          node <<'NODE'
+          const admin = require("firebase-admin");
+
+          const serviceAccount =
+            JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+          admin.initializeApp({
+            credential: admin.credential.cert(serviceAccount)
+          });
+
+          const db = admin.firestore();
+          const messaging = admin.messaging();
+
+          async function main() {
+            console.log("Checking for new notifications...");
+
+            const cutoff = admin.firestore.Timestamp.fromMillis(
+              Date.now() - 15 * 60 * 1000
+            );
+
+            const snapshot = await db
+              .collection("notifications")
+              .where("createdAt", ">=", cutoff)
+              .get();
+
+            console.log(
+              `Found ${snapshot.size} recent notification(s).`
+            );
+
+            for (const doc of snapshot.docs) {
+              const notification = doc.data();
+
+              if (notification.pushSentAt) {
+                continue;
+              }
+
+              const userId = notification.userId;
+
+              if (!userId) {
+                console.log("Skipping notification without userId:", doc.id);
+                continue;
+              }
+
+              const userDoc = await db
+                .collection("users")
+                .doc(userId)
+                .get();
+
+              if (!userDoc.exists) {
+                console.log("User not found:", userId);
+                continue;
+              }
+
+              const userData = userDoc.data();
+              const fcmToken = userData.fcmToken;
+
+              if (!fcmToken) {
+                console.log("No FCM token for user:", userId);
+                continue;
+              }
+
+              const messageText =
+                notification.message ||
+                "You have a new notification.";
+
+              const type =
+                notification.type ||
+                "notification";
+
+              try {
+                await messaging.send({
+                  token: fcmToken,
+                  data: {
+                    title: "Navodaya Forever",
+                    message: String(messageText),
+                    type: String(type),
+                    target: "notifications"
+                  },
+                  android: {
+                    priority: "high"
+                  }
+                });
+
+                await doc.ref.update({
+                  pushSentAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+
+                console.log(
+                  "Notification sent successfully:",
+                  doc.id
+                );
+
+              } catch (error) {
+                console.error(
+                  "FCM send failed for:",
+                  doc.id,
+                  error.message
+                );
+              }
+            }
+          }
+
+          main().catch((error) => {
+            console.error(error);
+            process.exit(1);
+          });
+          NODE
