@@ -16,12 +16,12 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 24
 
       - name: Install Firebase Admin SDK
         run: npm install firebase-admin
 
-      - name: Send pending FCM notifications
+      - name: Send unsent notifications
         env:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
@@ -39,19 +39,14 @@ jobs:
           const messaging = admin.messaging();
 
           async function main() {
-            console.log("Checking for new notifications...");
-
-            const cutoff = admin.firestore.Timestamp.fromMillis(
-              Date.now() - 15 * 60 * 1000
-            );
+            console.log("Checking for unsent notifications...");
 
             const snapshot = await db
               .collection("notifications")
-              .where("createdAt", ">=", cutoff)
               .get();
 
             console.log(
-              `Found ${snapshot.size} recent notification(s).`
+              `Found ${snapshot.size} notification document(s).`
             );
 
             for (const doc of snapshot.docs) {
@@ -64,7 +59,10 @@ jobs:
               const userId = notification.userId;
 
               if (!userId) {
-                console.log("Skipping notification without userId:", doc.id);
+                console.log(
+                  "Skipping notification without userId:",
+                  doc.id
+                );
                 continue;
               }
 
@@ -82,25 +80,26 @@ jobs:
               const fcmToken = userData.fcmToken;
 
               if (!fcmToken) {
-                console.log("No FCM token for user:", userId);
+                console.log(
+                  "No FCM token for user:",
+                  userId
+                );
                 continue;
               }
-
-              const messageText =
-                notification.message ||
-                "You have a new notification.";
-
-              const type =
-                notification.type ||
-                "notification";
 
               try {
                 await messaging.send({
                   token: fcmToken,
                   data: {
                     title: "Navodaya Forever",
-                    message: String(messageText),
-                    type: String(type),
+                    message: String(
+                      notification.message ||
+                      "You have a new notification."
+                    ),
+                    type: String(
+                      notification.type ||
+                      "notification"
+                    ),
                     target: "notifications"
                   },
                   android: {
@@ -109,17 +108,18 @@ jobs:
                 });
 
                 await doc.ref.update({
-                  pushSentAt: admin.firestore.FieldValue.serverTimestamp()
+                  pushSentAt:
+                    admin.firestore.FieldValue.serverTimestamp()
                 });
 
                 console.log(
-                  "Notification sent successfully:",
+                  "FCM SENT:",
                   doc.id
                 );
 
               } catch (error) {
                 console.error(
-                  "FCM send failed for:",
+                  "FCM FAILED:",
                   doc.id,
                   error.message
                 );
