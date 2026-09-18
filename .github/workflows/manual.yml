@@ -26,20 +26,34 @@ jobs:
           FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
         run: |
           node <<'NODE'
-          const admin = require("firebase-admin");
+
+          const { initializeApp, cert } =
+            require("firebase-admin/app");
+
+          const {
+            getFirestore,
+            FieldValue
+          } = require("firebase-admin/firestore");
+
+          const {
+            getMessaging
+          } = require("firebase-admin/messaging");
 
           const serviceAccount =
             JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
 
-          admin.initializeApp({
-            credential: require("firebase-admin/app").cert(serviceAccount)
+          initializeApp({
+            credential: cert(serviceAccount)
           });
 
-          const db = admin.firestore();
-          const messaging = admin.messaging();
+          const db = getFirestore();
+          const messaging = getMessaging();
 
           async function main() {
-            console.log("Checking for unsent notifications...");
+
+            console.log(
+              "Checking for unsent notifications..."
+            );
 
             const snapshot = await db
               .collection("notifications")
@@ -50,19 +64,23 @@ jobs:
             );
 
             for (const doc of snapshot.docs) {
+
               const notification = doc.data();
 
               if (notification.pushSentAt) {
                 continue;
               }
 
-              const userId = notification.userId;
+              const userId =
+                notification.userId;
 
               if (!userId) {
+
                 console.log(
                   "Skipping notification without userId:",
                   doc.id
                 );
+
                 continue;
               }
 
@@ -72,44 +90,70 @@ jobs:
                 .get();
 
               if (!userDoc.exists) {
-                console.log("User not found:", userId);
+
+                console.log(
+                  "User not found:",
+                  userId
+                );
+
                 continue;
               }
 
-              const userData = userDoc.data();
-              const fcmToken = userData.fcmToken;
+              const userData =
+                userDoc.data();
+
+              const fcmToken =
+                userData.fcmToken;
 
               if (!fcmToken) {
+
                 console.log(
                   "No FCM token for user:",
                   userId
                 );
+
                 continue;
               }
 
               try {
+
                 await messaging.send({
+
                   token: fcmToken,
+
                   data: {
-                    title: "Navodaya Forever",
-                    message: String(
-                      notification.message ||
-                      "You have a new notification."
-                    ),
-                    type: String(
-                      notification.type ||
-                      "notification"
-                    ),
-                    target: "notifications"
+
+                    title:
+                      "Navodaya Forever",
+
+                    message:
+                      String(
+                        notification.message ||
+                        "You have a new notification."
+                      ),
+
+                    type:
+                      String(
+                        notification.type ||
+                        "notification"
+                      ),
+
+                    target:
+                      "notifications"
                   },
+
                   android: {
-                    priority: "high"
+
+                    priority:
+                      "high"
                   }
                 });
 
                 await doc.ref.update({
+
                   pushSentAt:
-                    admin.firestore.FieldValue.serverTimestamp()
+                    FieldValue.serverTimestamp()
+
                 });
 
                 console.log(
@@ -118,6 +162,7 @@ jobs:
                 );
 
               } catch (error) {
+
                 console.error(
                   "FCM FAILED:",
                   doc.id,
@@ -128,7 +173,11 @@ jobs:
           }
 
           main().catch((error) => {
+
             console.error(error);
+
             process.exit(1);
+
           });
+
           NODE
