@@ -1571,3 +1571,35 @@ footer > p {
     }
 
 }
+/* =========================================
+   INSTAGRAM SHARE BUTTON
+========================================= */
+
+.share-button.instagram {
+    background: linear-gradient(
+        135deg,
+        #833ab4,
+        #fd1d1d,
+        #fcb045
+    );
+
+    color: white;
+    border: none;
+    transition: transform 0.2s ease,
+                box-shadow 0.2s ease;
+}
+
+.share-button.instagram:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.share-button.instagram:active {
+    transform: scale(0.97);
+}
+
+.share-button.instagram span {
+    margin-right: 6px;
+}

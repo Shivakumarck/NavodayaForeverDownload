@@ -692,3 +692,42 @@ async function nativeShare() {
     }
 
 }
+function shareInstagram() {
+
+    const shareText =
+        "Join Navodaya Forever 💙\n\n" +
+        "Friends, memories & moments that stay forever ❤️\n\n" +
+        window.location.href;
+
+    if (navigator.share) {
+
+        navigator.share({
+            title: "Navodaya Forever 💙",
+            text: shareText,
+            url: window.location.href
+        })
+        .catch(() => {});
+
+    } else {
+
+        navigator.clipboard.writeText(shareText)
+            .then(() => {
+
+                const message =
+                    document.getElementById("copyMessage");
+
+                if (message) {
+                    message.textContent =
+                        "Share message copied! Open Instagram and paste it. 💙";
+                }
+
+            })
+            .catch(() => {
+
+                alert(
+                    "Copy the website link and share it on Instagram."
+                );
+
+            });
+    }
+}
