@@ -1,0 +1,183 @@
+name: Navodaya Forever FCM Sender
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "*/5 * * * *"
+
+permissions:
+  contents: read
+
+jobs:
+  send-notifications:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Install Firebase Admin SDK
+        run: npm install firebase-admin
+
+      - name: Send unsent notifications
+        env:
+          FIREBASE_SERVICE_ACCOUNT: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
+        run: |
+          node <<'NODE'
+
+          const { initializeApp, cert } =
+            require("firebase-admin/app");
+
+          const {
+            getFirestore,
+            FieldValue
+          } = require("firebase-admin/firestore");
+
+          const {
+            getMessaging
+          } = require("firebase-admin/messaging");
+
+          const serviceAccount =
+            JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+
+          initializeApp({
+            credential: cert(serviceAccount)
+          });
+
+          const db = getFirestore();
+          const messaging = getMessaging();
+
+          async function main() {
+
+            console.log(
+              "Checking for unsent notifications..."
+            );
+
+            const snapshot = await db
+              .collection("notifications")
+              .get();
+
+            console.log(
+              `Found ${snapshot.size} notification document(s).`
+            );
+
+            for (const doc of snapshot.docs) {
+
+              const notification = doc.data();
+
+              if (notification.pushSentAt) {
+                continue;
+              }
+
+              const userId =
+                notification.userId;
+
+              if (!userId) {
+
+                console.log(
+                  "Skipping notification without userId:",
+                  doc.id
+                );
+
+                continue;
+              }
+
+              const userDoc = await db
+                .collection("users")
+                .doc(userId)
+                .get();
+
+              if (!userDoc.exists) {
+
+                console.log(
+                  "User not found:",
+                  userId
+                );
+
+                continue;
+              }
+
+              const userData =
+                userDoc.data();
+
+              const fcmToken =
+                userData.fcmToken;
+
+              if (!fcmToken) {
+
+                console.log(
+                  "No FCM token for user:",
+                  userId
+                );
+
+                continue;
+              }
+
+              try {
+
+                await messaging.send({
+
+                  token: fcmToken,
+
+                  data: {
+
+                    title:
+                      "Navodaya Forever",
+
+                    message:
+                      String(
+                        notification.message ||
+                        "You have a new notification."
+                      ),
+
+                    type:
+                      String(
+                        notification.type ||
+                        "notification"
+                      ),
+
+                    target:
+                      "notifications"
+                  },
+
+                  android: {
+
+                    priority:
+                      "high"
+                  }
+                });
+
+                await doc.ref.update({
+
+                  pushSentAt:
+                    FieldValue.serverTimestamp()
+
+                });
+
+                console.log(
+                  "FCM SENT:",
+                  doc.id
+                );
+
+              } catch (error) {
+
+                console.error(
+                  "FCM FAILED:",
+                  doc.id,
+                  error.message
+                );
+              }
+            }
+          }
+
+          main().catch((error) => {
+
+            console.error(error);
+
+            process.exit(1);
+
+          });
+
+          NODE
